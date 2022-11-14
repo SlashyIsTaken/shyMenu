@@ -28,3 +28,5 @@ As for the functions, I'd say half of it is copy-pasted from existing scripts. I
 /revive <id> | Revives a player, or yourself if <id> is left empty <br>
 /staffonline | Shows the amount of staff players are on duty <br>
 /tpm | Teleport to coords. <br>
+
+Foot note: Feel free to alter or modify this script.
