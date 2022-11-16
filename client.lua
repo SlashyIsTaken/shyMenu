@@ -202,7 +202,7 @@ TeleportToWaypoint = function()
     end
 end
 
--------- 
+-------- MAN MAN MAN JOOST IS ECHT EEN KLEREJONG
 
 RegisterNetEvent("karneheal")
 AddEventHandler("karneheal", function(wiedansmeh, joost)
@@ -254,7 +254,7 @@ function happetee()
     end
 end
 
------ End of fixVeh & heal
+--- End of fixVeh & heal
 local onlinePlayers, forceDraw = {}, false
 local joostactief = false
 
@@ -275,6 +275,7 @@ end)
 RegisterCommand("names", function(source, args, rawCommand)
     if indienst then
         joostactief = not joostactief
+        TriggerServerEvent("karne-showid:add-id")
     elseif not indienst then
         exports['okokNotify']:Alert("Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
     else
@@ -294,9 +295,7 @@ end)
 function Draw3DText(x, y, z, text, newScale)
     local onScreen, _x, _y = World3dToScreen2d(x, y, z)
     if onScreen then
-        local dist = GetDistanceBetweenCoords(GetGameplayCamCoords(), x, y, z, 1)
-        local scale = newScale * (1 / dist) * (1 / GetGameplayCamFov()) * 100
-        SetTextScale(scale, scale)
+        SetTextScale(0.5, 0.5)
         SetTextFont(4)
         SetTextProportional(1)
         SetTextColour(255, 255, 255, 255)
@@ -386,8 +385,7 @@ Citizen.CreateThread(function()
             if NetworkIsPlayerActive(i) and GetPlayerPed(i) ~= GetPlayerPed(-1) then
                 ped = GetPlayerPed(i)
                 blip = GetBlipFromEntity(ped)
-            
-                idTesta = Citizen.InvokeNative(0xBFEFE3321A3F5015, ped, GetPlayerName(i), false, false, "", false)
+        
 
                 if indienst and karneblip then
                     if not DoesBlipExist(blip) then

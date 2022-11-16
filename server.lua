@@ -37,17 +37,19 @@ function sendToDiscord(name, message, color)
               },
           }
       }
-    PerformHttpRequest('INSERT WEBHOOK LINK HERE', function(err, text, headers) end, 'POST', json.encode({username = 'Karneadmin', embeds = connect, avatar_url = 'https://topmerken.superunie.nl/app/uploads/sites/3/2022/01/karnemelk-0-0ddb6576e575ca72e6b2741e3f146247-570x570.png'}), { ['Content-Type'] = 'application/json' })
+    PerformHttpRequest('https://discord.com/api/webhooks/1034488949017677895/vx19o7Lz1xnpYbCy65yRkhfQXX3-L6OulQTiNB_8IlawGtbFj-toD4xqvwPkDaGliQsv', function(err, text, headers) end, 'POST', json.encode({username = 'Karneadmin', embeds = connect, avatar_url = 'https://topmerken.superunie.nl/app/uploads/sites/3/2022/01/karnemelk-0-0ddb6576e575ca72e6b2741e3f146247-570x570.png'}), { ['Content-Type'] = 'application/json' })
 end
 sendToDiscord("KarneAdmin aan het opstarten...", "Karnelogging successfully started.", 16711851)
 -- ADMIN SHIT BEGINT HIER OULEHH
 
 RegisterNetEvent('karneadmin:noClip')
 AddEventHandler('karneadmin:noClip', function()
-    if IsPlayerAceAllowed(source, "karneadmin") then
+    if IsPlayerAceAllowed(source, "karneadmin") and indienst then
         TriggerClientEvent('karneadmin:toggleNoClip', source)
         TriggerClientEvent('okokNotify:Alert', source, "Staff Noclip", "Noclip ingeschakeld.", 2000, 'info')
         sendToDiscord("/noclip", GetPlayerName(source).." heeft NoClip aangezet.", 65359)
+    elseif IsPlayerAceAllowed(source, "karneadmin") and not indienst then
+        TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
     else
         TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
     end
@@ -220,6 +222,7 @@ RegisterCommand("heal", function(source, args, rawCommand)
             sendToDiscord("/heal", GetPlayerName(xPlayer.source).." heeft "..GetPlayerName(xTarget.source).." gehealed.", 65359)
         else
             TriggerClientEvent("karneheal", source, xPlayer, false)
+            TriggerClientEvent("esx_basicneeds:healPlayer", source)
             TriggerClientEvent('okokNotify:Alert', source, "Staff Heal", "Je hebt jezelf gehealed!", 5000, 'info')
             sendToDiscord("/heal", GetPlayerName(xPlayer.source).." heeft zichzelf gehealed.", 65359)
         end
@@ -230,26 +233,26 @@ RegisterCommand("heal", function(source, args, rawCommand)
     end
 end, true)
 
-RegisterCommand("revive", function(source, args, rawCommand)
-    local xPlayer = ESX.GetPlayerFromId(source)
-    if IsPlayerAceAllowed(source, "karneadmin") and indienst then
-        if args[1] and tonumber(args[1]) then
-          	local targetId = tonumber(args[1])
-          	local xTarget = ESX.GetPlayerFromId(targetId)
-            TriggerEvent("esx_ambulancejob:revive", xTarget.source)
-            TriggerClientEvent('okokNotify:Alert', source, "Staff Revive", "Je hebt [ID: "..targetId.."] gerevived!", 5000, 'info')
-            sendToDiscord("/revive", GetPlayerName(xPlayer.source).." heeft "..GetPlayerName(xTarget.source).." gerevived.", 65359)
-        else
-            TriggerEvent("esx_ambulancejob:revive", source, xPlayer)
-            TriggerClientEvent('okokNotify:Alert', source, "Staff Heal", "Je hebt jezelf gerevived!", 5000, 'info')
-            sendToDiscord("/revive", GetPlayerName(xPlayer.source).." heeft zichzelf gerevived.", 65359)
-        end
-    elseif IsPlayerAceAllowed(source, "karneadmin") and not indienst then
-        TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
-    else
-        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
-    end
-end, true)
+-- RegisterCommand("revive", function(source, args, rawCommand)
+--     local xPlayer = ESX.GetPlayerFromId(source)
+--     if IsPlayerAceAllowed(source, "karneadmin") and indienst then
+--         if args[1] and tonumber(args[1]) then
+--           	local targetId = tonumber(args[1])
+--           	local xTarget = ESX.GetPlayerFromId(targetId)
+--             TriggerEvent("esx_ambulancejob:revive", xTarget.source)
+--             TriggerClientEvent('okokNotify:Alert', source, "Staff Revive", "Je hebt [ID: "..targetId.."] gerevived!", 5000, 'info')
+--             sendToDiscord("/revive", GetPlayerName(xPlayer.source).." heeft "..GetPlayerName(xTarget.source).." gerevived.", 65359)
+--         else
+--             TriggerEvent("esx_ambulancejob:revive", source)
+--             TriggerClientEvent('okokNotify:Alert', source, "Staff Revive", "Je hebt jezelf gerevived!", 5000, 'info')
+--             sendToDiscord("/revive", GetPlayerName(xPlayer.source).." heeft zichzelf gerevived.", 65359)
+--         end
+--     elseif IsPlayerAceAllowed(source, "karneadmin") and not indienst then
+--         TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+--     else
+--         TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+--     end
+-- end, true)
 
 RegisterCommand("freeze", function(source, args, rawCommand)
     local xPlayer = ESX.GetPlayerFromId(source)
@@ -288,19 +291,17 @@ RegisterCommand("unfreeze", function(source, args, rawCommand)
         TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
     end
 end, true)
------ End of /heal /revive /coords /freeze
+--- End of /heal /revive /coords /freeze
 onlinePlayers = {}
 
 RegisterServerEvent('karne-showid:add-id')
 AddEventHandler('karne-showid:add-id', function()
-    if IsPlayerAceAllowed(source, "karneadmin") then
+    if IsPlayerAceAllowed(source, "karneadmin") and indienst then
         TriggerClientEvent("karne-showid:client:add-id", source, onlinePlayers)
         local topText = GetPlayerName(source)
         local identifiers = GetPlayerIdentifiers(source)
         onlinePlayers[tostring(source)] = topText
         TriggerClientEvent("karne-showid:client:add-id", -1, topText, tostring(source))
-    else
-        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
     end
 end)
 
@@ -308,7 +309,7 @@ AddEventHandler('playerDropped', function(reason)
     onlinePlayers[tostring(source)] = nil
 end)
 
------ End of names
+--- End of names
 
 RegisterCommand("car", function(source, args, rawCommand)
     local xPlayer = ESX.GetPlayerFromId(source)
@@ -330,7 +331,7 @@ end, true)
 ---- End of veh
 
 RegisterCommand("blips", function(source, args, rawCommand)
-    if IsPlayerAceAllowed(source, "karneadmin") then
+    if IsPlayerAceAllowed(source, "karneadmin") and indienst then
         TriggerClientEvent('karneblips', source)
         sendToDiscord("/blips", GetPlayerName(source).." heeft blips aangezet", 65359)
         TriggerClientEvent('okokNotify:Alert', source, "Staff Blips", "Blips aangezet!", 5000, 'info')
@@ -347,4 +348,25 @@ RegisterCommand('staffonline', function(source, args, rawCommand)
     else
         TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
     end
-end)
+end, true)
+
+RegisterCommand("skin", function(source, args, rawCommand)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    if IsPlayerAceAllowed(source, "karneadmin") and indienst then
+        if args[1] and tonumber(args[1]) then
+          	local targetId = tonumber(args[1])
+          	local xTarget = ESX.GetPlayerFromId(targetId)
+            TriggerClientEvent("esx_skin:openSaveableMenu", xTarget.source)
+            TriggerClientEvent('okokNotify:Alert', source, "Staff Skin", "Je hebt [ID: "..targetId.."] een skin menu gegeven!", 5000, 'info')
+            sendToDiscord("/skin", GetPlayerName(xPlayer.source).." heeft "..GetPlayerName(xTarget.source).." een skin menu gegeven.", 65359)
+        else
+            TriggerClientEvent("esx_skin:openSaveableMenu", source)
+            TriggerClientEvent('okokNotify:Alert', source, "Staff Heal", "Je hebt jezelf een skin menu gegeven!", 5000, 'info')
+            sendToDiscord("/skin", GetPlayerName(xPlayer.source).." heeft zichzelf een skin menu gegeven.", 65359)
+        end
+    elseif IsPlayerAceAllowed(source, "karneadmin") and not indienst then
+        TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+    else
+        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+    end
+end, true)
