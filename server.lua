@@ -37,7 +37,7 @@ function sendToDiscord(name, message, color)
               },
           }
       }
-    PerformHttpRequest('https://discord.com/api/webhooks/1034488949017677895/vx19o7Lz1xnpYbCy65yRkhfQXX3-L6OulQTiNB_8IlawGtbFj-toD4xqvwPkDaGliQsv', function(err, text, headers) end, 'POST', json.encode({username = 'Karneadmin', embeds = connect, avatar_url = 'https://topmerken.superunie.nl/app/uploads/sites/3/2022/01/karnemelk-0-0ddb6576e575ca72e6b2741e3f146247-570x570.png'}), { ['Content-Type'] = 'application/json' })
+    PerformHttpRequest('INSERTYOURWEBHOOKHERE', function(err, text, headers) end, 'POST', json.encode({username = 'Karneadmin', embeds = connect, avatar_url = 'https://topmerken.superunie.nl/app/uploads/sites/3/2022/01/karnemelk-0-0ddb6576e575ca72e6b2741e3f146247-570x570.png'}), { ['Content-Type'] = 'application/json' })
 end
 sendToDiscord("KarneAdmin aan het opstarten...", "Karnelogging successfully started.", 16711851)
 -- ADMIN SHIT BEGINT HIER OULEHH
