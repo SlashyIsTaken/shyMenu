@@ -31,13 +31,18 @@ As for the functions, I'd say half of it is copy-pasted from existing scripts. I
 /tpm | Teleport to coords. <br>
 
 ADDED 25/11/22: <br>
-/bekijkinv <id> (showinv) | Shows the ESX inventory from the specified player via a menu default list. Click on an item to void it.
-/a <message> | Admin chat. Messages are broadcasted to all admins currently in service.
-/sqlban, /sqlunban, and it's search parameters. Too lazy to document all the commands, they can be found within server.lua.
+/bekijkinv <id> (showinv) | Shows the ESX inventory from the specified player via a menu default list. Click on an item to void it. <br>
+/a <message> | Admin chat. Messages are broadcasted to all admins currently in service. <br>
+/sqlban, /sqlunban, and it's search parameters. Too lazy to document all the commands, they can be found within server.lua. <br>
 
-Dependencies:
-es_extended
-mySQL
-okokNotify (able to change to your own if you'd like.)
+# Dependencies:
+es_extended <br>
+mySQL <br>
+okokNotify (able to change to your own if you'd like.) <br>
+
+# Webhooks:
+Change logging webhooks at the following places; <br>
+- karnemelk.lua; lines 89 & 280 <br>
+- server.lua; line 50 <br>
 
 Foot note: Feel free to alter or modify this script.
