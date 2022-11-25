@@ -36,9 +36,9 @@ ADDED 25/11/22: <br>
 /sqlban, /sqlunban, and it's search parameters. Too lazy to document all the commands, they can be found within server.lua. <br>
 
 # Dependencies:
-es_extended <br>
-mySQL <br>
-okokNotify (able to change to your own if you'd like.) <br>
+- es_extended <br>
+- mySQL <br>
+- okokNotify (able to change to your own if you'd like.) <br>
 
 # Webhooks:
 Change logging webhooks at the following places; <br>
