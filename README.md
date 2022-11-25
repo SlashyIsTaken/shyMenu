@@ -10,9 +10,9 @@ The script is written for a dutch server, and thus is translated in dutch, has s
 As for the functions, I'd say half of it is copy-pasted from existing scripts. I can't really remember which scripts I used to combine them together into this. If you think you recognise a script made by someone else that I have integrated in here, please tell me so I can credit the original creator.
 
 # Command overview:
-/staffdienst (staffduty) | Toggles the duty on/off <br>
+/instaff (staffduty) | Toggles the duty on <br>
+/uitstaff (staffduty) | Toggles the duty off <br>
 /blips | Toggles player blips on/off. Only works in a radius of 255 (configurable) <br>
-/names | Toggles names on/off. Only shows names in line of sight of the admin <br>
 /bring <id> | Brings a player to you <br>
 /bringfreezed <id> | Brings a player to you in a freezed state <br>
 /bringback <id> | Brings the player back to where they were before the /bring command was invoked by the admin. If the player was freezed, it unfreezes them. <br>
@@ -24,9 +24,20 @@ As for the functions, I'd say half of it is copy-pasted from existing scripts. I
 /goto <id> | Go to a player <br>
 /goback | Go back to your original coords <br>
 /heal <id> | Heals a player, or heals yourself if <id> is left empty <br>
+/kill <id> | Kills a player.
 /noclip | Toggles Noclip on/off. Doesnt feature scaleforms. Controls are configurable in client.lua <br>
 /revive <id> | Revives a player, or yourself if <id> is left empty <br>
 /staffonline | Shows the amount of staff players are on duty <br>
 /tpm | Teleport to coords. <br>
+
+ADDED 25/11/22: <br>
+/bekijkinv <id> (showinv) | Shows the ESX inventory from the specified player via a menu default list. Click on an item to void it.
+/a <message> | Admin chat. Messages are broadcasted to all admins currently in service.
+/sqlban, /sqlunban, and it's search parameters. Too lazy to document all the commands, they can be found within server.lua.
+
+Dependencies:
+es_extended
+mySQL
+okokNotify (able to change to your own if you'd like.)
 
 Foot note: Feel free to alter or modify this script.

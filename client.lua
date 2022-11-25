@@ -11,13 +11,19 @@ end)
 
 RegisterNetEvent('karneadmin:syncdienst')
 AddEventHandler('karneadmin:syncdienst', function(id, name)
-    if not indienst then
-        indienst = true
-        exports['okokNotify']:Alert("Staff Dienst", "Welkom, "..name.."!", 5000, 'success')
-    elseif indienst then
-        indienst = false
-        exports['okokNotify']:Alert("Staff Dienst", "Bedankt voor je dienst, "..name.."!", 5000, 'info')
-    end
+    indienst = true
+    exports['okokNotify']:Alert("Staff Dienst", "Welkom, "..name.."!", 5000, 'success')
+end)
+
+RegisterNetEvent('karneadmin:resetdienst')
+AddEventHandler('karneadmin:resetdienst', function(id, name)
+    indienst = false
+    NoClipStatus = false
+    NoClipEntity = false
+    radarEsteso = false
+    karneblip = false
+    joostactief = false
+    exports['okokNotify']:Alert("Staff Dienst", "Bedankt voor je dienst, "..name.."!", 5000, 'info')
 end)
 
 -- ADMIN SHIT BEGINT HIER OULEHH
@@ -105,21 +111,23 @@ end)
 
 RegisterNetEvent('karneadmin:toggleNoClip')
 AddEventHandler('karneadmin:toggleNoClip', function()
-    if indienst and not NoClipStatus then
-        if IsPedInAnyVehicle(PlayerPedId(), false) then
-            NoClipEntity = GetVehiclePedIsIn(PlayerPedId(), false)
-        else
-            NoClipEntity = PlayerPedId()
-        end
+    if indienst then
+        if not NoClipStatus then
+            if IsPedInAnyVehicle(PlayerPedId(), false) then
+                NoClipEntity = GetVehiclePedIsIn(PlayerPedId(), false)
+            else
+                NoClipEntity = PlayerPedId()
+            end
 
-        SetEntityAlpha(NoClipEntity, 51, 0)
-        if(NoClipEntity ~= PlayerPedId()) then
-            SetEntityAlpha(PlayerPedId(), 51, 0)
-        end
-    elseif indienst and NoClipStatus then
-        ResetEntityAlpha(NoClipEntity)
-        if(NoClipEntity ~= PlayerPedId()) then
-            ResetEntityAlpha(PlayerPedId())
+            SetEntityAlpha(NoClipEntity, 51, 0)
+            if(NoClipEntity ~= PlayerPedId()) then
+                SetEntityAlpha(PlayerPedId(), 51, 0)
+            end
+        elseif NoClipStatus then
+            ResetEntityAlpha(NoClipEntity)
+            if(NoClipEntity ~= PlayerPedId()) then
+                ResetEntityAlpha(PlayerPedId())
+            end
         end
     elseif not indienst then
         exports['okokNotify']:Alert("Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
@@ -138,18 +146,20 @@ AddEventHandler('karneadmin:toggleNoClip', function()
 end)
 
 RegisterCommand('karnenoclip', function()
-    if indienst and NoClipStatus then
-        TriggerEvent('karneadmin:toggleNoClip')
-    elseif indienst and not NoClipStatus then
-        TriggerServerEvent('karneadmin:noClip')
-    elseif not indienst then
+    if indienst then
+        if NoClipStatus then
+            TriggerEvent('karneadmin:toggleNoClip')
+        elseif not NoClipStatus then
+            TriggerServerEvent('karneadmin:noClip')
+        end
+    else
         exports['okokNotify']:Alert("Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
     end
-end, false)
+end)
 
 RegisterCommand('karnenoclip_cam', function()
     FollowCamMode = not FollowCamMode
-end, false)
+end)
 
 RegisterCommand('karnenoclip_speed', function()
     if index ~= #Speeds then
@@ -159,7 +169,7 @@ RegisterCommand('karnenoclip_speed', function()
         CurrentSpeed = Speeds[1].speed
         index = 1
     end
-end, false)
+end)
 
 RegisterKeyMapping('karnenoclip', 'NoClip', 'keyboard', 'DELETE')
 RegisterKeyMapping('karnenoclip_cam', 'NoClip Camera', 'keyboard', 'V')
@@ -178,7 +188,6 @@ RegisterCommand("tpm", function(source)
 end)
 
 TeleportToWaypoint = function()
-
     if indienst then
         local joostzijnmoeder = GetFirstBlipInfoId(8)
         if DoesBlipExist(joostzijnmoeder) then
@@ -225,7 +234,7 @@ RegisterCommand("fixveh", function(source, args, rawCommand)
     else
         exports['okokNotify']:Alert("Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
     end
-end, false)
+end)
 
 function happetee()
     if indienst then
@@ -246,6 +255,7 @@ function happetee()
             SetVehicleFixed(VehicleData)
 	        SetVehicleDeformationFixed(VehicleData)
             SetVehicleOnGroundProperly(VehicleData)
+            SetVehicleDoorsLocked(VehicleData, 1)
             exports['okokNotify']:Alert("Staff Fixveh", "Voertuig is weer helemaal schier!", 3000, 'info')
             ClearPedTasks(ped)
         else
@@ -255,111 +265,113 @@ function happetee()
 end
 
 --- End of fixVeh & heal
-local onlinePlayers, forceDraw = {}, false
-local joostactief = false
+-- local onlinePlayers, forceDraw = {}, false
+-- local joostactief = false
 
-Citizen.CreateThread(function()
-    TriggerServerEvent("karne-showid:add-id")
-    while true do
-        Citizen.Wait(5)
-        if indienst and joostactief then
-            for k, v in pairs(GetNeareastPlayers()) do
-                local x, y, z = table.unpack(v.coords)
-                Draw3DText(x, y, z + 1.1, v.playerId, 1.0)
-                Draw3DText(x, y, z + 1.20, v.topText, 1.0)
-            end
-        end
-    end
-end)
+-- Citizen.CreateThread(function()
+--     TriggerServerEvent("karne-showid:add-id")
+--     while true do
+--         Citizen.Wait(5)
+--         if indienst then
+--             if joostactief then
+--                 for k, v in pairs(GetNeareastPlayers()) do
+--                     local x, y, z = table.unpack(v.coords)
+--                     Draw3DText(x, y, z + 1.1, v.playerId, 1.0)
+--                     Draw3DText(x, y, z + 1.20, v.topText, 1.0)
+--                 end
+--             end
+--         end
+--     end
+-- end)
 
-RegisterCommand("names", function(source, args, rawCommand)
-    if indienst then
-        joostactief = not joostactief
-        TriggerServerEvent("karne-showid:add-id")
-    elseif not indienst then
-        exports['okokNotify']:Alert("Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
-    else
-        exports['okokNotify']:Alert("Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
-    end
-end, false)
+-- RegisterCommand("names", function(source, args, rawCommand)
+--     if indienst then
+--         joostactief = not joostactief
+--         TriggerServerEvent("karne-showid:add-id")
+--     elseif not indienst then
+--         exports['okokNotify']:Alert("Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+--     else
+--         exports['okokNotify']:Alert("Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+--     end
+-- end)
 
-RegisterNetEvent('karne-showid:client:add-id')
-AddEventHandler('karne-showid:client:add-id', function(identifier, playerSource)
-    if playerSource then
-        onlinePlayers[playerSource] = identifier
-    else
-        onlinePlayers = identifier
-    end
-end)
+-- RegisterNetEvent('karne-showid:client:add-id')
+-- AddEventHandler('karne-showid:client:add-id', function(identifier, playerSource)
+--     if playerSource then
+--         onlinePlayers[playerSource] = identifier
+--     else
+--         onlinePlayers = identifier
+--     end
+-- end)
 
-function Draw3DText(x, y, z, text, newScale)
-    local onScreen, _x, _y = World3dToScreen2d(x, y, z)
-    if onScreen then
-        SetTextScale(0.5, 0.5)
-        SetTextFont(4)
-        SetTextProportional(1)
-        SetTextColour(255, 255, 255, 255)
-        SetTextDropShadow(0, 0, 0, 0, 255)
-        SetTextDropShadow()
-        SetTextEdge(4, 0, 0, 0, 255)
-        SetTextOutline()
-        SetTextEntry("STRING")
-        SetTextCentre(1)
-        AddTextComponentString(text)
-        DrawText(_x, _y)
-    end
-end
+-- function Draw3DText(x, y, z, text, newScale)
+--     local onScreen, _x, _y = World3dToScreen2d(x, y, z)
+--     if onScreen then
+--         SetTextScale(0.5, 0.5)
+--         SetTextFont(4)
+--         SetTextProportional(1)
+--         SetTextColour(255, 255, 255, 255)
+--         SetTextDropShadow(0, 0, 0, 0, 255)
+--         SetTextDropShadow()
+--         SetTextEdge(4, 0, 0, 0, 255)
+--         SetTextOutline()
+--         SetTextEntry("STRING")
+--         SetTextCentre(1)
+--         AddTextComponentString(text)
+--         DrawText(_x, _y)
+--     end
+-- end
 
-function GetNeareastPlayers()
-    local playerPed = PlayerPedId()
-    local players_clean = {}
-    local playerCoords = GetEntityCoords(playerPed)
-    if IsPedInAnyVehicle(playerPed, false) then
-        local playersId = tostring(GetPlayerServerId(PlayerId()))
-        table.insert(players_clean, {topText = onlinePlayers[playersId], playerId = playersId, coords = playerCoords} )
-    else
-        local players, _ = GetPlayersInArea(playerCoords, 200)
-        for i = 1, #players, 1 do
-            local playerServerId = GetPlayerServerId(players[i])
-            local player = GetPlayerFromServerId(playerServerId)
-            local ped = GetPlayerPed(player)
-            if IsEntityVisible(ped) then
-                for x, identifier in pairs(onlinePlayers) do 
-                    if x == tostring(playerServerId) then
-                        table.insert(players_clean, {topText = identifier:upper(), playerId = playerServerId, coords = GetEntityCoords(ped)})
-                    end
-                end
-            end
-        end
-    end
+-- function GetNeareastPlayers()
+--     local playerPed = PlayerPedId()
+--     local players_clean = {}
+--     local playerCoords = GetEntityCoords(playerPed)
+--     if IsPedInAnyVehicle(playerPed, false) then
+--         local playersId = tostring(GetPlayerServerId(PlayerId()))
+--         table.insert(players_clean, {topText = onlinePlayers[playersId], playerId = playersId, coords = playerCoords} )
+--     else
+--         local players, _ = GetPlayersInArea(playerCoords, 200)
+--         for i = 1, #players, 1 do
+--             local playerServerId = GetPlayerServerId(players[i])
+--             local player = GetPlayerFromServerId(playerServerId)
+--             local ped = GetPlayerPed(player)
+--             if IsEntityVisible(ped) then
+--                 for x, identifier in pairs(onlinePlayers) do 
+--                     if x == tostring(playerServerId) then
+--                         table.insert(players_clean, {topText = identifier:upper(), playerId = playerServerId, coords = GetEntityCoords(ped)})
+--                     end
+--                 end
+--             end
+--         end
+--     end
    
-    return players_clean
-end
+--     return players_clean
+-- end
 
-function GetPlayersInArea(coords, area)
-	local players, playersInArea = GetPlayers(), {}
-	local coords = vector3(coords.x, coords.y, coords.z)
-	for i=1, #players, 1 do
-		local target = GetPlayerPed(players[i])
-		local targetCoords = GetEntityCoords(target)
+-- function GetPlayersInArea(coords, area)
+-- 	local players, playersInArea = GetPlayers(), {}
+-- 	local coords = vector3(coords.x, coords.y, coords.z)
+-- 	for i=1, #players, 1 do
+-- 		local target = GetPlayerPed(players[i])
+-- 		local targetCoords = GetEntityCoords(target)
 
-		if #(coords - targetCoords) <= area then
-			table.insert(playersInArea, players[i])
-		end
-	end
-	return playersInArea
-end
+-- 		if #(coords - targetCoords) <= area then
+-- 			table.insert(playersInArea, players[i])
+-- 		end
+-- 	end
+-- 	return playersInArea
+-- end
 
-function GetPlayers()
-    local players = {}
-    for _, player in ipairs(GetActivePlayers()) do
-        local ped = GetPlayerPed(player)
-        if DoesEntityExist(ped) then
-            table.insert(players, player)
-        end
-    end
-    return players
-end
+-- function GetPlayers()
+--     local players = {}
+--     for _, player in ipairs(GetActivePlayers()) do
+--         local ped = GetPlayerPed(player)
+--         if DoesEntityExist(ped) then
+--             table.insert(players, player)
+--         end
+--     end
+--     return players
+-- end
 
 ----- End of Names
 local radarEsteso = false
@@ -379,15 +391,13 @@ end)
 
 Citizen.CreateThread(function()
     while true do
-    Wait(1)
-
+    Wait(100)
         for i = 0, 255 do
             if NetworkIsPlayerActive(i) and GetPlayerPed(i) ~= GetPlayerPed(-1) then
-                ped = GetPlayerPed(i)
-                blip = GetBlipFromEntity(ped)
-        
-
-                if indienst and karneblip then
+            ped = GetPlayerPed(i)
+            blip = GetBlipFromEntity(ped)
+            if indienst then
+                if karneblip then
                     if not DoesBlipExist(blip) then
                         blip = AddBlipForEntity(ped)
                         SetBlipSprite(blip, 1) 
@@ -458,15 +468,12 @@ Citizen.CreateThread(function()
                             SetBlipRotation(blip, math.ceil(GetEntityHeading(veh))) 
                             SetBlipNameToPlayerName(blip, i) 
                             SetBlipScale(blip, 0.85) 
-
-
                             if IsPauseMenuActive() then
                                 SetBlipAlpha(blip, 255)
                             else 
                                 x1, y1 = table.unpack(GetEntityCoords(GetPlayerPed(-1), true)) 
                                 x2, y2 = table.unpack(GetEntityCoords(GetPlayerPed(i), true)) 
                                 distanza = (math.floor(math.abs(math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))) / -1)) + 900
-
                                 if distanza < 0 then
                                     distanza = 0
                                 elseif distanza > 255 then
@@ -481,4 +488,152 @@ Citizen.CreateThread(function()
                 end
             end
         end
+    end
+end)
+-- Reports alleen als je in dienst bent
+RegisterNetEvent('karnemelk:laatmaarkomen')
+AddEventHandler('karnemelk:laatmaarkomen', function()
+    if indienst then
+        exports['okokNotify']:Alert("NIEUWE REPORT", "Er is een nieuwe report aangemaakt.", 5000, 'info')
+    end
+end)
+-- Loon
+Citizen.CreateThread(function()
+    local sleep = 60000*15
+    while true do
+        Citizen.Wait(sleep)
+        if indienst then
+            TriggerServerEvent('karnemelk:dikgeldverdienen')
+        end
+    end
+end)
+-- kill
+RegisterNetEvent("karnekill")
+AddEventHandler("karnekill", function(wiedansmeh)
+    local player = PlayerPedId(wiedansmeh)
+    if indienst then
+        SetEntityHealth(player, 0)
+    end
+end)
+--showinv
+
+RegisterNetEvent("karneinv")
+AddEventHandler("karneinv", function(wiedan)
+    if indienst then
+        OpenBodySearchMenu(wiedan)
+    end
+end)
+
+function OpenBodySearchMenu(player)
+    ESX.TriggerServerCallback('karnemelk:getOtherPlayerData', function(data)
+
+        local elements = {}
+
+        table.insert(elements, {
+            label = '<b>JOB & GELD</b>',
+            value = nil
+        })
+
+        table.insert(elements, {
+            label = data.job,
+            value = nil
+        })
+
+        for i = 1, #data.accounts, 1 do
+
+            if data.accounts[i].name == 'black_money' and data.accounts[i].money > 0 then
+
+                table.insert(elements, {
+                    label = 'Zwart Geld: €'..ESX.Math.Round(data.accounts[i].money),
+                    value = 'black_money',
+                    itemType = 'item_account',
+                    amount = data.accounts[i].money
+                })
+
+            end
+            if data.accounts[i].name == 'money' and data.accounts[i].money > 0 then
+                table.insert(elements, {
+                    label = 'Cash Geld: €'..ESX.Math.Round(data.accounts[i].money),
+                    value = 'money',
+                    itemType = 'item_account',
+                    amount = data.accounts[i].money
+                })
+            end
+            if data.accounts[i].name == 'bank' and data.accounts[i].money > 0 then
+                table.insert(elements, {
+                    label = 'Bank: €'..ESX.Math.Round(data.accounts[i].money),
+                    value = 'bank',
+                    itemType = 'item_account',
+                    amount = data.accounts[i].money
+                })
+                break
+            end
+        end
+
+        table.insert(elements, {
+            label = '<b>WAPENS</b>',
+            value = nil
+        })
+
+        for i = 1, #data.weapons, 1 do
+            table.insert(elements, {
+                label = ESX.GetWeaponLabel(data.weapons[i].name).." met "..data.weapons[i].ammo.." kogels",
+                value = data.weapons[i].name,
+                itemType = 'item_weapon',
+                amount = data.weapons[i].ammo
+            })
+        end
+
+        table.insert(elements, {
+            label = '<b>ITEMS</b>',
+            value = nil
+        })
+
+        for i = 1, #data.inventory, 1 do
+            if data.inventory[i].count > 0 then
+                table.insert(elements, {
+                    label = data.inventory[i].count.."x "..data.inventory[i].label,
+                    value = data.inventory[i].name,
+                    itemType = 'item_standard',
+                    amount = data.inventory[i].count
+                })
+            end
+        end
+
+        ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'body_search', {
+            title = 'Staff Search 🥛',
+            align = 'top-right',
+            elements = elements
+        }, function(data, menu)
+
+            local itemType = data.current.itemType
+            local itemName = data.current.value
+            local amount = data.current.amount
+
+            if data.current.value ~= nil then
+                TriggerServerEvent('karnemelk:wegermee', player, itemType, itemName,
+                    amount)
+                OpenBodySearchMenu(player)
+            end
+
+        end, function(data, menu)
+            menu.close()
+        end)
+
+    end, player)
+
+end
+
+RegisterNetEvent('BanSql:Respond')
+AddEventHandler('BanSql:Respond', function()
+	TriggerServerEvent("BanSql:CheckMe")
+end)
+
+RegisterNetEvent('karnechat:lekkerchatten', function(id, name, message)
+    if indienst then
+	    TriggerEvent('chat:addMessage', {
+	    	template = '<div style="padding: 0.5vw; margin: 0.5vw; background-color: rgba(255,32,19, 0.6); border-radius: 3px;"><i class="fas fa-user"></i> <b>[{0}]:</b> {1}</div>',
+	    	args = { name, message }
+	    })
+    end
 end)

@@ -2,8 +2,12 @@ fx_version 'cerulean'
 game 'gta5'
 
 author 'Slashy // Karnemelk'
-description 'Simple Admin Mode'
+description 'Admin Mode for SpringbankRP'
+
+server_scripts {
+    '@oxmysql/lib/MySQL.lua',
+    "server.lua",
+    "karnemelk.lua",
+}
 
 client_script "client.lua"
-
-server_script "server.lua"
