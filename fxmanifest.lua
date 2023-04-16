@@ -6,8 +6,9 @@ description 'Admin Mode for SpringbankRP'
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
-    "server.lua",
-    "karnemelk.lua",
+    "server/server.lua"
 }
 
-client_script "client.lua"
+client_script "client/client.lua"
+
+shared_script "config.lua"
