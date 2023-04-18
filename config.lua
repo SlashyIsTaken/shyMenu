@@ -1,11 +1,11 @@
 Config = {}
 
-Config.onDutyCommand = 'onduty' -- Change to whatever the on duty command should be.
-Config.offDutyCommand = 'offduty' -- Change to whatever the off duty command should be.
+Config.onDutyCommand = "onduty" -- Change to whatever the on duty command should be.
+Config.offDutyCommand = "offduty" -- Change to whatever the off duty command should be.
 
-Config.AceGroup = 'admin' -- Change to whichever ace group would be allowed to use the admin system.
+Config.AceGroup = "karneadmin" -- Change to whichever ace group would be allowed to use the admin system.
 
--- Keys can be found at https://docs.fivem.net/docs/game-references/input-mapper-parameter-ids/keyboard/
+-- Default noclip keys. These can be changed in the keybind settings ingame. Keys can be found at https://docs.fivem.net/docs/game-references/input-mapper-parameter-ids/keyboard/
 Config.NoclipKey = "DELETE" -- Noclip toggle key.
 Config.AlterCameraKey = "V" -- Noclip camera key
 Config.AlterSpeedKey = "LSHIFT" -- Noclip speed key.

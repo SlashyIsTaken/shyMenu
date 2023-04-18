@@ -6,7 +6,7 @@ TriggerEvent('esx:getSharedObject', function(obj)
     ESX = obj 
 end)
 
-RegisterCommand(Config.DutyCommand, function(source, args, user)
+RegisterCommand(Config.onDutyCommand, function(source, args, user)
     local src = source
     local xPlayer = ESX.GetPlayerFromId(src)
     local playername = xPlayer.getName()
@@ -45,7 +45,7 @@ sendToDiscord("KarneAdmin aan het opstarten...", "Karnelogging successfully star
 
 -- Commands
 RegisterCommand("goto", function(source, args, rawCommand)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         if onduty then
 	        if source ~= 0 then
   	        	local xPlayer = ESX.GetPlayerFromId(source)
@@ -75,7 +75,7 @@ RegisterCommand("goto", function(source, args, rawCommand)
 end, true)
 
 RegisterCommand("goback", function(source, args, rawCommand)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         if onduty then
 	        if source ~= 0 then
 	          	local xPlayer = ESX.GetPlayerFromId(source)
@@ -97,7 +97,7 @@ RegisterCommand("goback", function(source, args, rawCommand)
 end, true)
 
 RegisterCommand("bring", function(source, args, rawCommand)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         if onduty then
 	        if source ~= 0 then
   	        	local xPlayer = ESX.GetPlayerFromId(source)
@@ -128,7 +128,7 @@ RegisterCommand("bring", function(source, args, rawCommand)
 end, true)
 
 RegisterCommand("bringfreezed", function(source, args, rawCommand)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         if onduty then
 	        if source ~= 0 then
   	        	local xPlayer = ESX.GetPlayerFromId(source)
@@ -161,7 +161,7 @@ RegisterCommand("bringfreezed", function(source, args, rawCommand)
 end, true)
 
 RegisterCommand("bringback", function(source, args, rawCommand)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         if onduty then
 	        if source ~= 0 then
   	        	local xPlayer = ESX.GetPlayerFromId(source)
@@ -195,7 +195,7 @@ RegisterCommand("bringback", function(source, args, rawCommand)
 end, true)
 
 RegisterCommand("coords", function(source, args, rawCommand)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
 	    if source ~= 0 then
 	    	local xPlayer = ESX.GetPlayerFromId(source)
 	    	print(GetEntityCoords(GetPlayerPed(source)))
@@ -205,7 +205,7 @@ end, true)
 
 RegisterCommand("heal", function(source, args, rawCommand)
     local xPlayer = ESX.GetPlayerFromId(source)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         if onduty then
             if args[1] and tonumber(args[1]) then
               	local targetId = tonumber(args[1])
@@ -230,7 +230,7 @@ end, true)
 
 RegisterCommand("freeze", function(source, args, rawCommand)
     local xPlayer = ESX.GetPlayerFromId(source)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         if onduty then
             if args[1] and tonumber(args[1]) then
                 local targetId = tonumber(args[1])
@@ -251,7 +251,7 @@ end, true)
 
 RegisterCommand("unfreeze", function(source, args, rawCommand)
     local xPlayer = ESX.GetPlayerFromId(source)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         if onduty then
             if args[1] and tonumber(args[1]) then
                 local targetId = tonumber(args[1])
@@ -272,7 +272,7 @@ end, true)
 
 RegisterCommand("car", function(source, args, rawCommand)
     local xPlayer = ESX.GetPlayerFromId(source)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         if onduty then
             if args[1] then
                 local vehicle = args[1]
@@ -291,12 +291,12 @@ end, true)
 
 RegisterCommand("kill", function(source, args, rawCommand)
     local xPlayer = ESX.GetPlayerFromId(source)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         if onduty then
             if args[1] and tonumber(args[1]) then
               	local targetId = tonumber(args[1])
               	local xTarget = ESX.GetPlayerFromId(targetId)
-                TriggerClientEvent("karnekill", xTarget.source, targetId)
+                TriggerClientEvent("shyMenu:kill", xTarget.source, targetId)
                 sendToDiscord("/kill", GetPlayerName(xPlayer.source).." heeft "..GetPlayerName(xTarget.source).." gekilled.", 65359)
             end
         else
@@ -308,7 +308,7 @@ RegisterCommand("kill", function(source, args, rawCommand)
 end, true)
 
 RegisterCommand('a', function(source, args, rawCommand)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         local players = ESX.GetPlayers()
         for i = 1, #players do
             local player = ESX.GetPlayerFromId(players[i])
@@ -320,13 +320,13 @@ RegisterCommand('a', function(source, args, rawCommand)
 end, true)
 
 RegisterCommand('tpm', function(source, args, rawCommand)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         TriggerClientEvent('shyMenu:tpm', source)
 	end
 end, true)
 
 RegisterCommand('fixveh', function(source, args, rawCommand)
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         TriggerClientEvent('shyMenu:fixveh', source)
 	end
 end, true)
@@ -359,16 +359,6 @@ RegisterCommand("changeped", function(source, args, rawCommand)
 	end
 end, true)
 
-RegisterCommand('setfuel', function(source, args, rawCommand)
-    if IsPlayerAceAllowed(source, Config.AceGroup) then
-        local veh = GetVehiclePedIsIn(GetPlayerPed(args[1]), false)
-        local amount = (tonumber(args[2]) + 0.0)
-        if veh ~= 0 and amount <= 100 and amount > 0 then
-            Entity(veh).state.fuel = amount
-        end
-    end
-end)
-
 -- Server events (& handlers)
 RegisterServerEvent('shyMenu:staffmoney')
 AddEventHandler('shyMenu:staffmoney', function()
@@ -381,7 +371,7 @@ end)
 
 RegisterNetEvent('shyMenu:noClip')
 AddEventHandler('shyMenu:noClip', function()
-    if IsPlayerAceAllowed(src, Config.AceGroup) then
+    if IsPlayerAceAllowed(source, Config.AceGroup) then
         if onduty then
             TriggerClientEvent('shyMenu:toggleNoClip', source)
         else

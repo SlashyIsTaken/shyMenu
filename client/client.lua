@@ -28,7 +28,6 @@ local FollowCamMode = true
 local index = 1
 local CurrentSpeed = Speeds[index].speed
 local VehicleData = nil
-local karneblip = false
 
 -- Don't touch
 RegisterNetEvent('karneadmin:syncduty')
@@ -40,7 +39,7 @@ end)
 RegisterNetEvent('karneadmin:resetduty')
 AddEventHandler('karneadmin:resetduty', function(id, name)
     onduty = false
-    karneblip = false
+    NoClipStatus = false
     exports['okokNotify']:Alert("Staff Duty", "Thanks for your time, "..name.."!", 5000, 'info')
 end)
 
@@ -168,7 +167,7 @@ RegisterCommand('shy_speed', function()
     end
 end)
 
-RegisterKeyMapping('shyclip', 'NoClip', 'keyboard', Config.NoclipKey)
+RegisterKeyMapping('shynoclip', 'NoClip', 'keyboard', Config.NoclipKey)
 RegisterKeyMapping('shy_cam', 'NoClip Camera', 'keyboard', Config.AlterCameraKey)
 RegisterKeyMapping('shy_speed', 'NoClip Speed', 'keyboard', Config.AlterSpeedKey)
 
