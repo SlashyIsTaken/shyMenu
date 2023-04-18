@@ -30,17 +30,22 @@ local CurrentSpeed = Speeds[index].speed
 local VehicleData = nil
 
 -- Don't touch
-RegisterNetEvent('karneadmin:syncduty')
-AddEventHandler('karneadmin:syncduty', function(id, name)
+RegisterNetEvent('shyMenu:syncduty')
+AddEventHandler('shyMenu:syncduty', function(id, name)
     onduty = true
-    exports['okokNotify']:Alert("Staff Duty", "Welcome, "..name.."!", 5000, 'success')
+    Notify(Config.Translations.dutytitle, Config.Translations.welcome..", "..name.."!", "success")
 end)
 
-RegisterNetEvent('karneadmin:resetduty')
-AddEventHandler('karneadmin:resetduty', function(id, name)
+RegisterNetEvent('shyMenu:resetduty')
+AddEventHandler('shyMenu:resetduty', function(id, name)
     onduty = false
     NoClipStatus = false
-    exports['okokNotify']:Alert("Staff Duty", "Thanks for your time, "..name.."!", 5000, 'info')
+    Notify(Config.Translations.dutytitle, Config.Translations.thanks..", "..name.."!", "info")
+end)
+
+RegisterNetEvent('shyMenu:notify')
+AddEventHandler('shyMenu:notify', function(title, text, style)
+    Notify(title, text, style)
 end)
 
 -- Noclip
@@ -126,9 +131,9 @@ AddEventHandler('shyMenu:toggleNoClip', function()
             end
         end
     elseif not onduty then
-        exports['okokNotify']:Alert("Staff Duty", "You are off duty!", 5000, 'error')
+        Notify(Config.Translations.dutytitle, Config.Translations.offduty, "error")
     else
-        exports['okokNotify']:Alert("Beep. Boop. Bliep?", "You are no member of staff.", 5000, 'error')
+        Notify("Beep, Boop, Bleep?", Config.Translations.notstaff, "error")
     end
 
     SetEntityCollision(NoClipEntity, NoClipStatus, NoClipStatus)
@@ -149,7 +154,7 @@ RegisterCommand('shynoclip', function()
             TriggerServerEvent('shyMenu:noClip')
         end
     else
-        exports['okokNotify']:Alert("Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+        Notify(Config.Translations.dutytitle, Config.Translations.offduty, "error")
     end
 end)
 
@@ -177,9 +182,9 @@ AddEventHandler("shyMenu:tpm", function()
     if onduty then
         TeleportToWaypoint()
     elseif not onduty then
-        exports['okokNotify']:Alert("Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+        Notify(Config.Translations.dutytitle, Config.Translations.offduty, "error")
     else
-        exports['okokNotify']:Alert("Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+        Notify("Beep, Boop, Bleep?", Config.Translations.notstaff, "error")
     end
 end)
 
@@ -197,9 +202,9 @@ TeleportToWaypoint = function()
                 end
                 Citizen.Wait(5)
             end
-            exports['okokNotify']:Alert("Staff TPM", "Je wordt door het wormgat geduwd...", 3000, 'info')
+            Notify("TPM", Config.Translations.tpmsuccess, "success")
         else
-            exports['okokNotify']:Alert("Staff TPM", "Plaats eerst een waypoint!", 3000, 'error')
+            Notify("TPM", Config.Translations.nowp, "error")
         end
     end
 end
@@ -223,9 +228,9 @@ AddEventHandler("shyMenu:fixveh", function()
     if onduty then
         vehiclefix()
     elseif not onduty then
-        exports['okokNotify']:Alert("Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+        Notify(Config.Translations.dutytitle, Config.Translations.offduty, "error")
     else
-        exports['okokNotify']:Alert("Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+        Notify("Beep, Boop, Bleep?", Config.Translations.notstaff, "error")
     end
 end)
 
@@ -249,10 +254,10 @@ function vehiclefix()
 	        SetVehicleDeformationFixed(VehicleData)
             SetVehicleOnGroundProperly(VehicleData)
             SetVehicleDoorsLocked(VehicleData, 1)
-            exports['okokNotify']:Alert("Staff Fixveh", "Voertuig is weer helemaal schier!", 3000, 'info')
+            Notify("Vehicle Fix", Config.Translations.fixedveh, "success")
             ClearPedTasks(ped)
         else
-            exports['okokNotify']:Alert("Staff Fixveh", "Je bent niet in de buurt van een voertuig.", 3000, 'error')
+            Notify("Vehicle Fix", Config.Translations.noveh, "error")
         end
     end
 end
@@ -261,7 +266,7 @@ end
 RegisterNetEvent('shyMenu:newreport')
 AddEventHandler('shyMenu:newreport', function()
     if onduty then
-        exports['okokNotify']:Alert("New Report", "A new report has been created.", 5000, 'info')
+        Notify(Config.Translations.newreporttitle, Config.Translations.newreport, "info")
     end
 end)
 

@@ -12,8 +12,8 @@ RegisterCommand(Config.onDutyCommand, function(source, args, user)
     local playername = xPlayer.getName()
     if IsPlayerAceAllowed(src, Config.AceGroup) then
 		onduty = true
-		TriggerClientEvent('karneadmin:syncduty', src, GetPlayerIdentifier(src, 0), playername)
-        sendToDiscord("Staffdienst", GetPlayerName(xPlayer.source).." is in dienst gegaan als stafflid.", 65359)
+		TriggerClientEvent('shyMenu:syncduty', src, GetPlayerIdentifier(src, 0), playername)
+        sendToDiscord(Config.Translations.dutytoggletitle, GetPlayerName(xPlayer.source).." "..Config.Translations.enterduty, 65359)
     end
 end, true)
 
@@ -23,8 +23,8 @@ RegisterCommand(Config.offDutyCommand, function(source, args, user)
     local playername = xPlayer.getName()
     if IsPlayerAceAllowed(src, Config.AceGroup) then
         onduty = false
-        TriggerClientEvent('karneadmin:resetduty', src, GetPlayerIdentifier(src, 0), playername)
-		sendToDiscord("Staffdienst", GetPlayerName(xPlayer.source).." is uit dienst gegaan als stafflid.", 16735311)
+        TriggerClientEvent('shyMenu:resetduty', src, GetPlayerIdentifier(src, 0), playername)
+		sendToDiscord(Config.Translations.dutytoggletitle, GetPlayerName(xPlayer.source).." "..Config.Translations.leaveduty, 16735311)
     end
 end, true)
 
@@ -35,13 +35,13 @@ function sendToDiscord(name, message, color)
               ["title"] = "**".. name .."**",
               ["description"] = message,
               ["footer"] = {
-                  ["text"] = "Gemaakt met liefde door je boy karnemelk",
+                  ["text"] = "Made with <3 by Slashy#3200",
               },
           }
       }
-    PerformHttpRequest('YOUR WEBHOOK LINK HERE', function(err, text, headers) end, 'POST', json.encode({username = 'Karneadmin', embeds = connect, avatar_url = 'https://topmerken.superunie.nl/app/uploads/sites/3/2022/01/karnemelk-0-0ddb6576e575ca72e6b2741e3f146247-570x570.png'}), { ['Content-Type'] = 'application/json' })
+    PerformHttpRequest(Config.Webhook, function(err, text, headers) end, 'POST', json.encode({username = 'shyMenu', embeds = connect, avatar_url = 'https://static.vecteezy.com/system/resources/previews/006/428/710/original/cool-fox-with-sharp-eyes-mascot-logo-design-free-vector.jpg'}), { ['Content-Type'] = 'application/json' })
 end
-sendToDiscord("KarneAdmin aan het opstarten...", "Karnelogging successfully started.", 16711851)
+sendToDiscord("Script Restarted", "New logging session initialized.", 16711851)
 
 -- Commands
 RegisterCommand("goto", function(source, args, rawCommand)
@@ -57,20 +57,20 @@ RegisterCommand("goto", function(source, args, rawCommand)
                 		local playerCoords = xPlayer.getCoords()
                 		savedCoords[source] = playerCoords
                 		xPlayer.setCoords(targetCoords)
-                        sendToDiscord("/goto", GetPlayerName(xPlayer.source).." is naar "..GetPlayerName(xTarget.source).." geteleporteerd.", 65359)
-                        TriggerClientEvent('okokNotify:Alert', source, "Staff Goto", "Je werd geteleporteerd!", 5000, 'info')
+                        sendToDiscord("/goto", GetPlayerName(xPlayer.source).." "..Config.Translations.teleportedto.." "..GetPlayerName(xTarget.source), 65359)
+                        TriggerClientEvent('shyMenu:notify', source, Config.Translations.gototitle, Config.Translations.gotp, 'info')
               		else
-                		TriggerClientEvent('okokNotify:Alert', source, "Staff Goto", "Deze identifier is niet online!", 3000, 'error')
+                		TriggerClientEvent('shyMenu:notify', source, Config.Translations.gototitle, Config.Translations.offline, 'error')
               		end
             	else
-                    TriggerClientEvent('okokNotify:Alert', source, "Staff Goto", "Ongeldige invoer!", 3000, 'error')
+                    TriggerClientEvent('shyMenu:notify', source, Config.Translations.gototitle, Config.Translations.invalid, 'error')
             	end
 	        end
         else
-            TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+            TriggerClientEvent('shyMenu:notify', source, Config.Translations.dutytitle, Config.Translations.offduty, "error")
         end
     else
-        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+        TriggerClientEvent('shyMenu:notify', source, Config.Translations.notstafftitle, Config.Translations.notstaff, "error")
     end
 end, true)
 
@@ -82,17 +82,17 @@ RegisterCommand("goback", function(source, args, rawCommand)
 	            local playerCoords = savedCoords[source]
 	            if playerCoords then
 	            	xPlayer.setCoords(playerCoords)
-	        		TriggerClientEvent('okokNotify:Alert', source, "Staff Goto", "Je werd weer terug geteleporteerd!", 5000, 'info')
+	        		TriggerClientEvent('shyMenu:notify', source, Config.Translations.gototitle, Config.Translations.backtp, 'info')
 	            	savedCoords[source] = nil
 	            else
-                    TriggerClientEvent('okokNotify:Alert', source, "Staff Goto", "Fout bij het ophalen van je oude coords!", 5000, 'error')
+                    TriggerClientEvent('shyMenu:notify', source, Config.Translations.gototitle, Config.Translations.coorderror, 'error')
 	            end
 	        end
         else
-            TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+            TriggerClientEvent('shyMenu:notify', source, Config.Translations.dutytitle, Config.Translations.offduty, "error")
         end
     else
-        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+        TriggerClientEvent('shyMenu:notify', source, Config.Translations.notstafftitle, Config.Translations.notstaff, "error")
     end
 end, true)
 
@@ -109,21 +109,21 @@ RegisterCommand("bring", function(source, args, rawCommand)
                 		local playerCoords = xPlayer.getCoords()
                 		savedCoords[targetId] = targetCoords
                 		xTarget.setCoords(playerCoords)
-                        TriggerClientEvent('okokNotify:Alert', source, "Staff Bring", "Speler word opgehaald...", 5000, 'info')
-                        TriggerClientEvent('okokNotify:Alert', xTarget.source, "Springbank Staff", "Je werd geteleporteerd naar een stafflid.", 5000, 'info')
-                        sendToDiscord("/bring", GetPlayerName(xPlayer.source).." bracht "..GetPlayerName(xTarget.source).." naar zich toe.", 65359)
+                        TriggerClientEvent('shyMenu:notify', source, Config.Translations.bringtitle, Config.Translations.bringplayer, 'info')
+                        TriggerClientEvent('shyMenu:notify', xTarget.source, Config.Translations.stafftitle, Config.Translations.tptostaff, 'info')
+                        sendToDiscord("/bring", GetPlayerName(xPlayer.source).." "..Config.Translations.brought.." "..GetPlayerName(xTarget.source), 65359)
               		else
-                		TriggerClientEvent('okokNotify:Alert', source, "Staff Bring", "Deze identifier is niet online!", 3000, 'error')
+                		TriggerClientEvent('shyMenu:notify', source, Config.Translations.bringtitle, Config.Translations.offline, 'error')
               		end
             	else
-                    TriggerClientEvent('okokNotify:Alert', source, "Staff Bring", "Ongeldige invoer!", 3000, 'error')
+                    TriggerClientEvent('shyMenu:notify', source, Config.Translations.bringtitle, Config.Translations.invalid, 'error')
             	end
 	        end
         else
-            TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+            TriggerClientEvent('shyMenu:notify', source, Config.Translations.dutytitle, Config.Translations.offduty, "error")
         end
     else
-        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+        TriggerClientEvent('shyMenu:notify', source, Config.Translations.notstafftitle, Config.Translations.notstaff, "error")
     end
 end, true)
 
@@ -140,23 +140,23 @@ RegisterCommand("bringfreezed", function(source, args, rawCommand)
                 		local playerCoords = xPlayer.getCoords()
                 		savedCoords[targetId] = targetCoords
                 		xTarget.setCoords(playerCoords)
-                        TriggerClientEvent('okokNotify:Alert', source, "Staff Bring", "Speler word opgehaald en gefreezed...", 5000, 'info')
-                        TriggerClientEvent('okokNotify:Alert', xTarget.source, "Springbank Staff", "Je werd geteleporteerd naar een stafflid.", 5000, 'info')
-                        sendToDiscord("/bringfreezed", GetPlayerName(xPlayer.source).." bracht "..GetPlayerName(xTarget.source).." bevroren naar zich toe.", 65359)
+                        TriggerClientEvent('shyMenu:notify', source, Config.Translations.bringtitle, Config.Translations.bringplayer, 'info')
+                        TriggerClientEvent('shyMenu:notify', xTarget.source, Config.Translations.stafftitle, Config.Translations.tptostaff, 'info')
+                        sendToDiscord("/bringfreezed", GetPlayerName(xPlayer.source).." "..Config.Translations.brought.." "..GetPlayerName(xTarget.source).." bevroren naar zich toe.", 65359)
                         Citizen.Wait(100)
                         FreezeEntityPosition(xTarget.source, true)
               		else
-                		TriggerClientEvent('okokNotify:Alert', source, "Staff Bring", "Deze identifier is niet online!", 3000, 'error')
+                		TriggerClientEvent('shyMenu:notify', source, Config.Translations.bringtitle, Config.Translations.offline, 'error')
               		end
             	else
-                    TriggerClientEvent('okokNotify:Alert', source, "Staff Bring", "Ongeldige invoer!", 3000, 'error')
+                    TriggerClientEvent('shyMenu:notify', source, Config.Translations.bringtitle, Config.Translations.invalid, 'error')
             	end
 	        end
         else
-            TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+            TriggerClientEvent('shyMenu:notify', source, Config.Translations.dutytitle, Config.Translations.offduty, "error")
         end
     else
-        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+        TriggerClientEvent('shyMenu:notify', source, Config.Translations.notstafftitle, Config.Translations.notstaff, "error")
     end
 end, true)
 
@@ -173,24 +173,24 @@ RegisterCommand("bringback", function(source, args, rawCommand)
                 		if playerCoords then
                         FreezeEntityPosition(xTarget.source, false)
                 		xTarget.setCoords(playerCoords)
-                		TriggerClientEvent('okokNotify:Alert', source, "Staff Bring", "Speler terug geteleporteerd!", 5000, 'info')
-                		TriggerClientEvent('okokNotify:Alert', xTarget.source, "Springbank Staff", "Je wordt terug geteleporteerd...", 5000, 'info')
+                		TriggerClientEvent('shyMenu:notify', source, Config.Translations.bringtitle, Config.Translations.bringback, 'info')
+                		TriggerClientEvent('shyMenu:notify', xTarget.source, Config.Translations.stafftitle, Config.Translations.tpback, 'info')
                 		savedCoords[targetId] = nil
                 	    else
-                		    TriggerClientEvent('okokNotify:Alert', source, "Staff Bring", "Speler kon niet terug worden geteleporteerd.", 5000, 'error')
+                		    TriggerClientEvent('shyMenu:notify', source, Config.Translations.bringtitle, Config.Translations.couldnottp, 'error')
                 	    end
               	    else
-                		TriggerClientEvent('okokNotify:Alert', source, "Staff Bring", "Deze identifier is niet online!", 3000, 'error')
+                		TriggerClientEvent('shyMenu:notify', source, Config.Translations.bringtitle, Config.Translations.offline, 'error')
               	    end
                 else
-                    TriggerClientEvent('okokNotify:Alert', source, "Staff Bring", "Ongeldige invoer!", 3000, 'error')
+                    TriggerClientEvent('shyMenu:notify', source, Config.Translations.bringtitle, Config.Translations.invalid, 'error')
                 end
 	        end
         else
-            TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+            TriggerClientEvent('shyMenu:notify', source, Config.Translations.dutytitle, Config.Translations.offduty, "error")
         end
     else
-        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+        TriggerClientEvent('shyMenu:notify', source, Config.Translations.notstafftitle, Config.Translations.notstaff, "error")
     end
 end, true)
 
@@ -212,19 +212,19 @@ RegisterCommand("heal", function(source, args, rawCommand)
               	local xTarget = ESX.GetPlayerFromId(targetId)
                 TriggerClientEvent("shyMenu:heal", xTarget.source, targetId, true)
                 TriggerClientEvent("esx_basicneeds:healPlayer", xTarget.source)
-                TriggerClientEvent('okokNotify:Alert', source, "Staff Heal", "Je hebt [ID: "..targetId.."] gehealed!", 5000, 'info')
-                sendToDiscord("/heal", GetPlayerName(xPlayer.source).." heeft "..GetPlayerName(xTarget.source).." gehealed.", 65359)
+                TriggerClientEvent('shyMenu:notify', source, Config.Translations.healtitle, Config.Translations.heal.." ID: "..targetId, 'info')
+                sendToDiscord("/heal", GetPlayerName(xPlayer.source).." "..Config.Translations.healed.." "..GetPlayerName(xTarget.source), 65359)
             else
                 TriggerClientEvent("shyMenu:heal", source, xPlayer, false)
                 TriggerClientEvent("esx_basicneeds:healPlayer", source)
-                TriggerClientEvent('okokNotify:Alert', source, "Staff Heal", "Je hebt jezelf gehealed!", 5000, 'info')
-                sendToDiscord("/heal", GetPlayerName(xPlayer.source).." heeft zichzelf gehealed.", 65359)
+                TriggerClientEvent('shyMenu:notify', source, Config.Translations.healtitle, Config.Translations.healself, 'info')
+                sendToDiscord("/heal", GetPlayerName(xPlayer.source).." "..Config.Translations.healedself, 65359)
             end
         else
-            TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+            TriggerClientEvent('shyMenu:notify', source, Config.Translations.dutytitle, Config.Translations.offduty, "error")
         end
     else
-        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+        TriggerClientEvent('shyMenu:notify', source, Config.Translations.notstafftitle, Config.Translations.notstaff, "error")
     end
 end, true)
 
@@ -236,16 +236,16 @@ RegisterCommand("freeze", function(source, args, rawCommand)
                 local targetId = tonumber(args[1])
                 local xTarget = ESX.GetPlayerFromId(targetId)
                 FreezeEntityPosition(xTarget.source, true)
-                TriggerClientEvent('okokNotify:Alert', source, "Staff Freeze", "Je hebt [ID: "..targetId.."] gefreezed!", 5000, 'info')
-                sendToDiscord("/freeze", GetPlayerName(xPlayer.source).." heeft "..GetPlayerName(xTarget.source).." gefreezed.", 65359)
+                TriggerClientEvent('shyMenu:notify', source, Config.Translations.freezetitle, Config.Translations.freezed.." ID: "..targetId, 'info')
+                sendToDiscord("/freeze", GetPlayerName(xPlayer.source).." "..Config.Translations.froze.." "..GetPlayerName(xTarget.source), 65359)
             else
-                TriggerClientEvent('okokNotify:Alert', source, "Staff Freeze", "Specificeer een speler, a.u.b.", 5000, 'error')
+                TriggerClientEvent('shyMenu:notify', source, Config.Translations.freezetitle, Config.Translations.invalid, 'error')
             end
         else
-            TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+            TriggerClientEvent('shyMenu:notify', source, Config.Translations.dutytitle, Config.Translations.offduty, "error")
         end
     else
-        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+        TriggerClientEvent('shyMenu:notify', source, Config.Translations.notstafftitle, Config.Translations.notstaff, "error")
     end
 end, true)
 
@@ -257,16 +257,16 @@ RegisterCommand("unfreeze", function(source, args, rawCommand)
                 local targetId = tonumber(args[1])
                 local xTarget = ESX.GetPlayerFromId(targetId)
                 FreezeEntityPosition(xTarget.source, false)
-                TriggerClientEvent('okokNotify:Alert', source, "Staff Freeze", "Je hebt [ID: "..targetId.."] geunfreezed!", 5000, 'info')
-                sendToDiscord("/freeze", GetPlayerName(xPlayer.source).." heeft "..GetPlayerName(xTarget.source).." geunfreezed.", 65359)
+                TriggerClientEvent('shyMenu:notify', source, Config.Translations.freezetitle, Config.Translations.unfreezed.." ID: "..targetId, 'info')
+                sendToDiscord("/freeze", GetPlayerName(xPlayer.source).." "..Config.Translations.defroze.." "..GetPlayerName(xTarget.source), 65359)
             else
-                TriggerClientEvent('okokNotify:Alert', source, "Staff Freeze", "Specificeer een speler, a.u.b.", 5000, 'error')
+                TriggerClientEvent('shyMenu:notify', source, Config.Translations.freezetitle, Config.Translations.invalid, 'error')
             end
         else
-            TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+            TriggerClientEvent('shyMenu:notify', source, Config.Translations.dutytitle, Config.Translations.offduty, "error")
         end
     else
-        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+        TriggerClientEvent('shyMenu:notify', source, Config.Translations.notstafftitle, Config.Translations.notstaff, "error")
     end
 end, true)
 
@@ -277,15 +277,15 @@ RegisterCommand("car", function(source, args, rawCommand)
             if args[1] then
                 local vehicle = args[1]
                 xPlayer.triggerEvent('esx:spawnVehicle', vehicle)
-                sendToDiscord("/car", GetPlayerName(xPlayer.source).." heeft een "..vehicle.." ingespawned.", 65359)
+                sendToDiscord("/car", GetPlayerName(xPlayer.source).." "..Config.Translations.carspawn.." "..vehicle, 65359)
             else
-                TriggerClientEvent('okokNotify:Alert', source, "Staff Vehicle", "Specificeer een model, a.u.b.", 5000, 'error')
+                TriggerClientEvent('shyMenu:notify', source, Config.Translations.cartitle, Config.Translations.invalid, 'error')
             end
         else
-            TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+            TriggerClientEvent('shyMenu:notify', source, Config.Translations.dutytitle, Config.Translations.offduty, "error")
         end
     else
-        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+        TriggerClientEvent('shyMenu:notify', source, Config.Translations.notstafftitle, Config.Translations.notstaff, "error")
     end
 end, true)
 
@@ -297,13 +297,13 @@ RegisterCommand("kill", function(source, args, rawCommand)
               	local targetId = tonumber(args[1])
               	local xTarget = ESX.GetPlayerFromId(targetId)
                 TriggerClientEvent("shyMenu:kill", xTarget.source, targetId)
-                sendToDiscord("/kill", GetPlayerName(xPlayer.source).." heeft "..GetPlayerName(xTarget.source).." gekilled.", 65359)
+                sendToDiscord("/kill", GetPlayerName(xPlayer.source).." "..Config.Translations.kill.." "..GetPlayerName(xTarget.source), 65359)
             end
         else
-            TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+            TriggerClientEvent('shyMenu:notify', source, Config.Translations.dutytitle, Config.Translations.offduty, "error")
         end
     else
-        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+        TriggerClientEvent('shyMenu:notify', source, Config.Translations.notstafftitle, Config.Translations.notstaff, "error")
     end
 end, true)
 
@@ -338,7 +338,7 @@ RegisterCommand('kick', function(source, args, rawCommand)
 			local xPlayer = ESX.GetPlayerFromId(targetid)
 			xPlayer.kick(table.concat(args, " "))
 		else
-			TriggerClientEvent('okokNotify:Alert', source, "Hmmm...", "Specificeer een ID, en geef een kick reden op!", 5000, 'error')
+			TriggerClientEvent('shyMenu:notify', source, Config.Translations.kicktitle, Config.Translations.invalid, 'error')
 		end
 	end
 end, true)
@@ -354,7 +354,7 @@ RegisterCommand("changeped", function(source, args, rawCommand)
     	        TriggerClientEvent('shyMenu:changePed', targetId, pedHash)
     	    end
     	else
-    	    TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+    	    TriggerClientEvent('shyMenu:notify', source, Config.Translations.notstafftitle, Config.Translations.notstaff, "error")
     	end
 	end
 end, true)
@@ -365,7 +365,7 @@ AddEventHandler('shyMenu:staffmoney', function()
     local xPlayer = ESX.GetPlayerFromId(source)
     if IsPlayerAceAllowed(source, Config.AceGroup) then
         xPlayer.addAccountMoney('bank', Config.StaffPayout)
-        TriggerClientEvent('okokNotify:Alert', source, "Topper", "Je bent een topper. Je kreeg je staffbonus van 1000 Euro.", 5000, 'success')
+        TriggerClientEvent('shyMenu:notify', source, Config.Translations.paytitle, Config.Translations.payday, 'success')
     end
 end)
 
@@ -375,10 +375,10 @@ AddEventHandler('shyMenu:noClip', function()
         if onduty then
             TriggerClientEvent('shyMenu:toggleNoClip', source)
         else
-            TriggerClientEvent('okokNotify:Alert', source, "Staff Dienst", "Je bent niet in dienst!", 5000, 'error')
+            TriggerClientEvent('shyMenu:notify', source, Config.Translations.dutytitle, Config.Translations.offduty, "error")
         end
     else
-        TriggerClientEvent('okokNotify:Alert', source, "Onvoldoende Rechten", "Helaas... Je bent geen staff!", 5000, 'error')
+        TriggerClientEvent('shyMenu:notify', source, Config.Translations.notstafftitle, Config.Translations.notstaff, "error")
     end
 end)
 
