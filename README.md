@@ -5,11 +5,6 @@ This is a duty & ace permission based system that allows the use of admin comman
 
 As of 18/4, the system now features a config.lua. Edit to your liking.
 
-# Dependencies:
-- es_extended <br>
-- mySQL <br>
-- A notification system. <br>
-
 # Features:
 Quick overview of some of the features; <br>
 <b>Commands</b> <br>
@@ -30,5 +25,10 @@ Quick overview of some of the features; <br>
 - <a href="https://github.com/RedAlex/FiveM-BanSql">SQLBan.</a> Credit goes to RedAlex. <br>
 - Noclip <br>
 - Player Drop Notifications <br>
+
+# Dependencies:
+- es_extended <br>
+- mySQL <br>
+- A notification system. <br>
 
 Feel free to recommend me updates.  <br>
