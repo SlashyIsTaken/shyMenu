@@ -27,7 +27,7 @@ Quick overview of some of the features; <br>
 - Admin chat (/a) <br>
 
 <b>Integrations</b> <br>
-- <a href="https://github.com/RedAlex/FiveM-BanSql">SQLBan.</a> Credit goes to the RedAlex. <br>
+- <a href="https://github.com/RedAlex/FiveM-BanSql">SQLBan.</a> Credit goes to RedAlex. <br>
 - Noclip <br>
 - Player Drop Notifications <br>
 
