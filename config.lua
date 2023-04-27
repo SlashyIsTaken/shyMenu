@@ -1,6 +1,6 @@
 Config = {}
 
-Config.Webhook = "WEBHOOK"
+-- Change the webhook link in server/main.lua, line 3.
 
 Config.onDutyCommand = "onduty" -- Change to whatever the on duty command should be.
 Config.offDutyCommand = "offduty" -- Change to whatever the off duty command should be.
