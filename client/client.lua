@@ -49,67 +49,6 @@ AddEventHandler('shyMenu:notify', function(title, text, style)
 end)
 
 -- Noclip
-Citizen.CreateThread(function()
-    while true do
-        while NoClipStatus do
-            -- Disables all controls, then enables some crucial again. Feel free to add or remove some.
-            DisableAllControlActions()
-            EnableControlAction(0, 1, true) -- Pan
-            EnableControlAction(0, 2, true) -- Tilt
-            EnableControlAction(0, 18, true) -- Enter
-            EnableControlAction(0, 24, true) -- RMB
-            EnableControlAction(0, 25, true) -- LMB
-            EnableControlAction(0, 26, true) -- C
-            EnableControlAction(0, 36, true) -- Left Control
-            EnableControlAction(1, 245, true) -- T
-            EnableControlAction(0, 249, true) -- N
-
-            local yoff = 0.0
-            local zoff = 0.0
-
-			if IsDisabledControlPressed(0, Controls.goForward) then
-                yoff = Offsets.y
-			end
-			
-            if IsDisabledControlPressed(0, Controls.goBackward) then
-                yoff = -Offsets.y
-			end
-
-            if IsDisabledControlPressed(0, Controls.goUp) then
-                zoff = Offsets.z
-			end
-			
-            if IsDisabledControlPressed(0, Controls.goDown) then
-                zoff = -Offsets.z
-			end
-
-            if not FollowCamMode and IsDisabledControlPressed(0, Controls.turnLeft) then
-                SetEntityHeading(PlayerPedId(), GetEntityHeading(PlayerPedId())+Offsets.h)
-			end
-			
-            if not FollowCamMode and IsDisabledControlPressed(0, Controls.turnRight) then
-                SetEntityHeading(PlayerPedId(), GetEntityHeading(PlayerPedId())-Offsets.h)
-			end
-			
-            local newPos = GetOffsetFromEntityInWorldCoords(NoClipEntity, 0.0, yoff * (CurrentSpeed + 0.3), zoff * (CurrentSpeed + 0.3))
-            local heading = GetEntityHeading(NoClipEntity)
-            
-            SetEntityVelocity(NoClipEntity, 0.0, 0.0, 0.0)
-            SetEntityRotation(NoClipEntity, 0.0, 0.0, 0.0, 0, false)
-            if(FollowCamMode) then
-                SetEntityHeading(NoClipEntity, GetGameplayCamRelativeHeading());
-            else
-                SetEntityHeading(NoClipEntity, heading);
-            end
-            SetEntityCoordsNoOffset(NoClipEntity, newPos.x, newPos.y, newPos.z, true, true, true)
-
-            SetLocalPlayerVisibleLocally(true);
-            Citizen.Wait(0)
-        end
-        Citizen.Wait(0)
-    end
-end)
-
 RegisterNetEvent('shyMenu:toggleNoClip')
 AddEventHandler('shyMenu:toggleNoClip', function()
     if onduty then
@@ -144,6 +83,67 @@ AddEventHandler('shyMenu:toggleNoClip', function()
     SetPoliceIgnorePlayer(PlayerPedId(), not NoClipStatus);
 
     NoClipStatus = not NoClipStatus
+
+    if NoClipStatus then
+        -- Start a No CLip thread
+        Citizen.CreateThread(function()
+            while NoClipStatus do
+                -- Disables all controls, then enables some crucial again. Feel free to add or remove some.
+                DisableAllControlActions()
+                EnableControlAction(0, 1, true) -- Pan
+                EnableControlAction(0, 2, true) -- Tilt
+                EnableControlAction(0, 18, true) -- Enter
+                EnableControlAction(0, 24, true) -- RMB
+                EnableControlAction(0, 25, true) -- LMB
+                EnableControlAction(0, 26, true) -- C
+                EnableControlAction(0, 36, true) -- Left Control
+                EnableControlAction(1, 245, true) -- T
+                EnableControlAction(0, 249, true) -- N
+    
+                local yoff = 0.0
+                local zoff = 0.0
+    
+                if IsDisabledControlPressed(0, Controls.goForward) then
+                    yoff = Offsets.y
+                end
+                
+                if IsDisabledControlPressed(0, Controls.goBackward) then
+                    yoff = -Offsets.y
+                end
+    
+                if IsDisabledControlPressed(0, Controls.goUp) then
+                    zoff = Offsets.z
+                end
+                
+                if IsDisabledControlPressed(0, Controls.goDown) then
+                    zoff = -Offsets.z
+                end
+    
+                if not FollowCamMode and IsDisabledControlPressed(0, Controls.turnLeft) then
+                    SetEntityHeading(PlayerPedId(), GetEntityHeading(PlayerPedId())+Offsets.h)
+                end
+                
+                if not FollowCamMode and IsDisabledControlPressed(0, Controls.turnRight) then
+                    SetEntityHeading(PlayerPedId(), GetEntityHeading(PlayerPedId())-Offsets.h)
+                end
+                
+                local newPos = GetOffsetFromEntityInWorldCoords(NoClipEntity, 0.0, yoff * (CurrentSpeed + 0.3), zoff * (CurrentSpeed + 0.3))
+                local heading = GetEntityHeading(NoClipEntity)
+                
+                SetEntityVelocity(NoClipEntity, 0.0, 0.0, 0.0)
+                SetEntityRotation(NoClipEntity, 0.0, 0.0, 0.0, 0, false)
+                if(FollowCamMode) then
+                    SetEntityHeading(NoClipEntity, GetGameplayCamRelativeHeading());
+                else
+                    SetEntityHeading(NoClipEntity, heading);
+                end
+                SetEntityCoordsNoOffset(NoClipEntity, newPos.x, newPos.y, newPos.z, true, true, true)
+    
+                SetLocalPlayerVisibleLocally(true);
+                Citizen.Wait(0)
+            end
+        end)
+    end
 end)
 
 RegisterCommand('shynoclip', function()
